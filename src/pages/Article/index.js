@@ -21,17 +21,15 @@ import img404 from "@/assets/error.png";
 import { useEffect, useState } from "react";
 import { http } from "@/utils";
 import history from "@/utils/history";
+import { useStore } from "@/store";
 
 const { Option } = Select;
 const { RangePicker } = DatePicker;
 
 const Article = () => {
   // 频道列表管理
-  const [channelList, setChannelList] = useState([]);
-  const loadChannelList = async () => {
-    const res = await http.get("/channels");
-    setChannelList(res.data.channels);
-  };
+  const { channelsStore } = useStore();
+  // 表单提交
   const onFinish = (value) => {
     // console.log(value);
     const { status, channel_id, date } = value;
@@ -62,7 +60,6 @@ const Article = () => {
     page: 1,
     per_page: 10,
   });
-
   // 翻页触发事件
   const pageChange = (page) => {
     setParams({
@@ -72,8 +69,9 @@ const Article = () => {
   };
   // 调用接口 渲染dom
   useEffect(() => {
-    loadChannelList();
-  }, []);
+    // loadChannelList();
+    channelsStore.getChannels();
+  }, [channelsStore]);
   // 如果异步请求函数需要依赖一些数据的变化而重新执行，推荐把它写到副作用函数的内部
   useEffect(() => {
     async function fetchArticleList() {
@@ -103,7 +101,9 @@ const Article = () => {
       dataIndex: "cover",
       width: 120,
       render: (cover) => {
-        return <img src={cover || img404} width={80} height={60} alt=""></img>;
+        return (
+          <img src={cover.images || img404} width={80} height={60} alt=""></img>
+        );
       },
     },
     {
@@ -188,7 +188,7 @@ const Article = () => {
           </Form.Item>
           <Form.Item label="频道" name="channel_id">
             <Select placeholder="请选择文章频道" style={{ width: 120 }}>
-              {channelList.map((channel) => {
+              {channelsStore.channelsList.map((channel) => {
                 return (
                   <Option value={channel.name} key={channel.id}>
                     {channel.name}
@@ -197,7 +197,6 @@ const Article = () => {
               })}
             </Select>
           </Form.Item>
-
           <Form.Item label="日期" name="date">
             {/* 传入locale属性，控制中文显示 */}
             <RangePicker locale={locale}></RangePicker>
