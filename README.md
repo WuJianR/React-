@@ -68,3 +68,6 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 ### `npm run build` fails to minify
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+
+优化-配置 CDN 优化：
+把那些经常不太动，但是体积又大的那些包，放到 CDN 服务器上，然后借助浏览器的缓存，加载一次后，再打开直接用缓存里的就行了，这样就不用反复去拉取新的，起到一个快速加载的目的。
